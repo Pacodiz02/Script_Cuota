@@ -106,7 +106,6 @@ function f_existe_en_fstab {
                 return 0
         fi
 
-
 }
 
 function f_habilita_quota {
