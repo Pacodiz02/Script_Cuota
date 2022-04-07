@@ -92,7 +92,7 @@ function f_UUID {
 function f_modifica_fstab {
 
         if [ echo $? -eq 0 ]; then
-                echo UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2
+                echo UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2 >> /etc/fstab
 }
 
 function f_existe_en_fstab {
