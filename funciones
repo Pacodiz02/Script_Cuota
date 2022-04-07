@@ -90,10 +90,11 @@ function f_UUID {
 }
 
 function f_modifica_fstab {
-
-        if [ echo $? -eq 0 ]; then
-                echo UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2 >> /etc/fstab
+    if [ $? -eq 0 ]; then
+        echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /home/usuario/script/script/ficherodeprueba.txt
+    fi
 }
+
 
 function f_existe_en_fstab {
         cat /etc/fstab | egrep -o $uuid
@@ -105,6 +106,7 @@ function f_existe_en_fstab {
                 echo "El dispositivo de bloques no está en el fichero /etc/fstab, añadiendolo a /etc/fstab"
                 return 0
         fi
+
 
 }
 

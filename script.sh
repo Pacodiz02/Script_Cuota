@@ -21,4 +21,5 @@ exit;
 fi;
 
 f_UUID $DISPOSITIVO
+f_modifica_fstab
 f_conexion $REPO
