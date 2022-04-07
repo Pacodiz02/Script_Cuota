@@ -1,13 +1,15 @@
 #!usr/bin/env bash
 #Zona de declaración de variables
 
-libreria="/home/usuario/script"
+libreria="/home/github/Script_Cuota"
 source $libreria/funciones
 
 DIRECTORIO="/QUOTA"
-DISPOSITIVO="/dev/sdb1"
+DISPOSITIVO="sda1"
+REPO="ftp.es.debian.org"
 
 #Zona de declaración de funciones
+f_limpia
 f_root
 
 if ! f_existe_directorio $DIRECTORIO 
@@ -18,10 +20,5 @@ else
 exit;
 fi;
 
-if ! f_UUID $DISPOSITIVO
-then
-   echo "No se ha encontrado el UUID del dispositivo indicado"
-else
-    echo "Se ha encontrado el UUID del dispositivo"
-exit;
-fi;
+f_UUID $DISPOSITIVO
+f_conexion $REPO
