@@ -1,6 +1,4 @@
 ##############################################
-
-
 #!/usr/bin/env bash
 # Autor: usuario 
 # Version: 
@@ -9,9 +7,7 @@
 
 # Zona de declaración de variables
 
-repo="ftp.es.debian.org"
 binario="quota"
-dispositivo=""
 uuid="sudo blkid -s UUID -o value /dev/$DISPOSITIVO"
 # Fin Zona
  
@@ -38,7 +34,7 @@ function f_root {
 
 
 #Mira si hay conexión con ftp.es.debian.org.
-#Devuelve 0 en caso de tenerla, 1 en caso negativo
+#Devuelve 0 en caso de tenerla, 1 en caso negativo.
 function f_conexion {
     ping -c1 $REPO &>/dev/null
     if [ $? -eq 0 ]; then
@@ -70,11 +66,15 @@ function f_instalaPaquete {
 function f_existe_directorio {
         if [ -d $DIRECTORIO ]
         then
-           return 0
+            echo "Se ha encontrado el directorio "$DIRECTORIO
+            return 0
         else
-           return 1
+            echo "No existe el directorio "$DIRECTORIO
+            return 1
+            set -e
         fi
         }
+
 
 
 function f_UUID {
