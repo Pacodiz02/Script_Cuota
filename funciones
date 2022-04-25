@@ -110,28 +110,47 @@ function f_existe_en_fstab {
 
 }
 
-function f_habilita_quota {
-
-}
-
-function f_plantilla_quota {
-
+function f_habilita_cuota {
+         if [ -e /QUOTA/aquota.users && -e /QUOTA/aquota.groups ]; then
+                 quotaon /QUOTA
+                 echo "Cuota habilitada"
+                 return 0
+        else
+                 echo "Los ficheros aquota.users y aquota.groups no están creados, procedemos a crearlos"
+                 quotacheck -c /QUOTA
+                 echo "Archivos creados"
+                 quotaon /QUOTA
+                 "Cuota habilitada"
+                 return 0
+        fi
 }
 
 function f_configura_quota {
+       echo "Procedemos a crear la cuota"
+       read -p "¿A que usuario le quieres aplicar la cuota?" usuario
+       read -p "Límite blando a asignar: " blando
+       read -p "Límite duro a asignar: " duro
+       quotatool -u $usuario -l $duro -q $blando /QUOTA
+       if [ $? -eq 0 ]; then
+                    echo "Cuota aplicada correctamente"
+       else
+                    echo "Error al intentar crear la cuota. Revisa los datos introducidos"
+       fi
+}
 
+function f_plantilla_cuota {
+       read -p "Elije el usuario al que copiar su plantilla: " usuario1
+       read -p "Usuario al que aplicar la plantilla: " usuario 2
+       edquota -p $usuario1 $usuario2
+       if [ $? = 0 ]; then
+                echo "Plantilla aplicada correctamente"
+        else
+                echo "Error al copiar la plantilla. Revisa que los nombres de usuarios introducidos sean correctos y existan en tu sistema"
+        fi
 }
 
 
 # Fin Zona
-
-
-#MAIN
-
-if f_instalado $binario; then echo $binario ya instalado; exit; else echo "No instalado, instalando paquete..."; fi 
-if f_instalaPaquete $binario; then echo $binario instalado con éxito.; fi
-
-# END MAIN
 
 
 ##############################################
