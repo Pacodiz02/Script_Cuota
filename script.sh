@@ -1,22 +1,17 @@
 #!/usr/bin/env bash
-#Zona de declaración de variables
 
 libreria=$(cd $(dirname "${BASH_SOURCE[0]}") >/dev/null && pwd)
 source $libreria/funciones
 
-DIRECTORIO="/QUOTA"
-DISPOSITIVO="sda1"
-REPO="ftp.es.debian.org"
-BINARIO="quota"
-
-#Zona de declaración de funciones
+#Zona de uso de funciones
 f_limpia
+read -p "Dispositivo sobre el que aplicar la cuota: " dispositivo
 f_root
-f_conexion $REPO
-f_instalarPaquete
-f_existe_directorio $DIRECTORIO
-f_UUID $DISPOSITIVO
+f_conexion
+f_instalaPaquete
+f_existe_directorio
+f_UUID
 f_modifica_fstab
-f_habilita_cuota
-f_plantilla_cuota
-f_configura_cuota $DIRECTORIO
+f_habilita_quota
+f_configura_quota
+f_plantilla_quota

@@ -6,9 +6,11 @@
 # Fecha de creación: mar 29 mar 2022 10:30:46 CEST
 
 # Zona de declaración de variables
-
+directorio="/QUOTA"
 binario="quota"
-uuid="sudo blkid -s UUID -o value /dev/$DISPOSITIVO"
+#dispositivo="sde"
+repo="ftp.es.debian.org"
+uuid=$(blkid -s UUID -o value /dev/$dispositivo)
 # Fin Zona
  
 
@@ -24,11 +26,12 @@ function f_limpia {
 function f_root {
         if [ $UID -eq 0 ]
         then
+	    echo "El usuario es root"
             return 0
         else
-            echo "Necesitas ser root para ejecutar el script."
-            return 1
-            exit
+            echo "Necesitas ser root para ejecutar el script. Cancelando script"
+	    return 1
+	    exit
         fi
         }
 
@@ -36,7 +39,7 @@ function f_root {
 #Mira si hay conexión con ftp.es.debian.org.
 #Devuelve 0 en caso de tenerla, 1 en caso negativo.
 function f_conexion {
-    ping -c1 $REPO &>/dev/null
+    ping -c1 $repo &>/dev/null
     if [ $? -eq 0 ]; then
         echo "Hay conexión"
         return 0
@@ -50,8 +53,11 @@ function f_conexion {
 
 #Instala el paquete introducido como argumento. Devuelve 0 si lo instala, 1 en caso contrario
 function f_instalaPaquete {
-	if [ $? -eq 0 ]; then
-		 apt install -y quota 
+	whatis quota &> /dev/null
+	if [ $? != 0 ]; then
+		echo "El paquete quota no se encuentra instalado, procedemos a instalarlo"
+		apt update -y &>/dev/null
+		apt install -y quota
 	fi
 }
 
@@ -60,22 +66,23 @@ function f_instalaPaquete {
 #Indica si existe el directorio /QUOTA
 
 function f_existe_directorio {
-        if [ -d $DIRECTORIO ]
+        if [ -d $directorio ]
         then
-            echo "Se ha encontrado el directorio "$DIRECTORIO
+            echo "Se ha encontrado el directorio "$directorio
             return 0
         else
-            echo "No existe el directorio "$DIRECTORIO
+            echo "No existe el directorio $directorio, procedemos a crearlo..."
             mkdir /QUOTA
-		return 1
-            set -e
+	    if [ $? -eq 0 ]; then
+		echo "Directorio $directorio creado satisfactoriamente"
+	    fi
+	    return 0
         fi
-        }
-
+}
 
 
 function f_UUID {
-    sudo blkid -s UUID -o value /dev/$DISPOSITIVO &>/dev/null
+    echo $uuid &> /dev/null
     if [ $? -ne 0 ]; then
         echo "El dispositivo no existe."
         return 1
@@ -89,6 +96,7 @@ function f_UUID {
 function f_modifica_fstab {
     if [ $? -eq 0 ]; then
         echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /etc/fstab
+	mount -a
     fi
 }
 
@@ -96,38 +104,46 @@ function f_modifica_fstab {
 function f_existe_en_fstab {
         cat /etc/fstab | egrep -o $uuid
 
-        if [ echo $? -eq 0 ]; then
+        if [ $? -eq 0 ]; then
                 echo "El dispositvo ya está añadido en el fichero /etc/fstab"
                 return 1
         else
                 echo "El dispositivo de bloques no está en el fichero /etc/fstab, añadiendolo a /etc/fstab"
                 return 0
         fi
-
-
 }
 
-function f_habilita_cuota {
-         if [ -e /QUOTA/aquota.users && -e /QUOTA/aquota.groups ]; then
-                 quotaon /QUOTA
-                 echo "Cuota habilitada"
-                 return 0
+function f_habilita_quota {
+        if [ -e /QUOTA/aquota.users ] && [ -e /QUOTA/aquota.groups ]; then
+                echo "Los ficheros necesarios ya se encuentran en el directorio QUOTAS"
+		quotaon $directorio
+		if [ $? -eq 0 ]; then
+			echo "Cuota habilitada"
+		fi
+		return 0
         else
                  echo "Los ficheros aquota.users y aquota.groups no están creados, procedemos a crearlos"
                  quotacheck -c /QUOTA
-                 echo "Archivos creados"
-                 quotaon /QUOTA
-                 "Cuota habilitada"
-                 return 0
+		 if [ $? -eq 0 ]; then
+			echo "Archivos creados exitosamente"
+			quotaon $directorio
+			if [ $? -eq 0 ]; then
+				echo "Cuota habilitada"
+			fi
+			return 0
+		 else
+			echo "Ha habido algún problema al crear los ficheros"
+			return 1
+		 fi
         fi
 }
 
 function f_configura_quota {
        echo "Procedemos a crear la cuota"
-       read -p "¿A que usuario le quieres aplicar la cuota?" usuario
+       read -p "¿A que usuario le quieres aplicar la cuota?: " usuario
        read -p "Límite blando a asignar: " blando
        read -p "Límite duro a asignar: " duro
-       quotatool -u $usuario -l $duro -q $blando /QUOTA
+       quotatool -u $usuario -bq $blando -l $duro /QUOTA
        if [ $? -eq 0 ]; then
                     echo "Cuota aplicada correctamente"
        else
@@ -135,9 +151,9 @@ function f_configura_quota {
        fi
 }
 
-function f_plantilla_cuota {
+function f_plantilla_quota {
        read -p "Elije el usuario al que copiar su plantilla: " usuario1
-       read -p "Usuario al que aplicar la plantilla: " usuario 2
+       read -p "Usuario al que aplicar la plantilla: " usuario2
        edquota -p $usuario1 $usuario2
        if [ $? = 0 ]; then
                 echo "Plantilla aplicada correctamente"
