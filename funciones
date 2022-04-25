@@ -69,10 +69,12 @@ function f_existe_directorio {
         if [ -d $directorio ]
         then
             echo "Se ha encontrado el directorio "$directorio
+            chmod 777 /QUOTA/
             return 0
         else
             echo "No existe el directorio $directorio, procedemos a crearlo..."
             mkdir /QUOTA
+            chmod 777 /QUOTA/
 	    if [ $? -eq 0 ]; then
 		echo "Directorio $directorio creado satisfactoriamente"
 	    fi
