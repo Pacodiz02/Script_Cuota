@@ -48,15 +48,11 @@ function f_conexion {
 }
 
 
-#Indica si el binario pasado como parámetro, está instalado devuelve 0, no instalado devuelve 1
-function f_instalado {
-	if which $1 &>/dev/null; then return 0; else return 1; fi
-} 
-
-
 #Instala el paquete introducido como argumento. Devuelve 0 si lo instala, 1 en caso contrario
 function f_instalaPaquete {
-	apt update &>/dev/null && apt -y install $binario 
+	if [ $? -eq 0 ]; then
+		 apt install -y quota 
+	fi
 }
 
 #------------------------------------------------------------------------------------------------
@@ -70,7 +66,8 @@ function f_existe_directorio {
             return 0
         else
             echo "No existe el directorio "$DIRECTORIO
-            return 1
+            mkdir /QUOTA
+		return 1
             set -e
         fi
         }
@@ -91,7 +88,7 @@ function f_UUID {
 
 function f_modifica_fstab {
     if [ $? -eq 0 ]; then
-        echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /home/usuario/script/script/ficherodeprueba.txt
+        echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /etc/fstab
     fi
 }
 
