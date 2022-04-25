@@ -15,3 +15,6 @@ f_existe_directorio $DIRECTORIO
 f_UUID $DISPOSITIVO
 f_modifica_fstab
 f_conexion $REPO
+f_habilita_cuota
+f_plantilla_cuota
+f_configura_cuota $DIRECTORIO
