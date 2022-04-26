@@ -46,7 +46,7 @@ function f_conexion {
 }
 
 
-#Instala el paquete introducido como argumento. Devuelve 0 si lo instala, 1 en caso contrario
+#Instala el paquete introducido como argumento.
 function f_instalaPaquete {
 	whatis quota &> /dev/null
 	if [ $? != 0 ]; then
@@ -59,7 +59,6 @@ function f_instalaPaquete {
 #------------------------------------------------------------------------------------------------
 
 #Indica si existe el directorio /QUOTA
-
 function f_existe_directorio {
         if [ -d $directorio ]
         then
@@ -77,7 +76,7 @@ function f_existe_directorio {
         fi
 }
 
-
+#Comprobamos que el dispositivo introducido por teclado existe y tiene formato
 function f_UUID {
     echo $uuid &> /dev/null
     if [ $? -ne 0 ]; then
@@ -90,6 +89,7 @@ function f_UUID {
     fi
 }
 
+#Modificamos el fichero fstab
 function f_modifica_fstab {
     if [ $? -eq 0 ]; then
         echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /etc/fstab
@@ -97,7 +97,7 @@ function f_modifica_fstab {
     fi
 }
 
-
+#Comprobamos si el dispositivo existe ya en el fstab
 function f_existe_en_fstab {
         cat /etc/fstab | egrep -o $uuid
 
@@ -110,6 +110,7 @@ function f_existe_en_fstab {
         fi
 }
 
+#Habilitamos la cuota en el directorio QUOTA y comprobamos que los ficheros necesarios estén creados
 function f_habilita_quota {
         if [ -e /QUOTA/aquota.users ] && [ -e /QUOTA/aquota.groups ]; then
                 echo "Los ficheros necesarios ya se encuentran en el directorio QUOTAS"
@@ -135,6 +136,7 @@ function f_habilita_quota {
         fi
 }
 
+#Configuración de la cuota para un usuario
 function f_configura_quota {
        echo "Procedemos a crear la cuota"
        read -p "¿A que usuario le quieres aplicar la cuota?: " usuario
@@ -148,6 +150,7 @@ function f_configura_quota {
        fi
 }
 
+#Le copiamos la cuota a un usuario del sistema y la aplicamos sobre otro
 function f_plantilla_quota {
        read -p "Elije el usuario al que copiar su plantilla: " usuario1
        read -p "Usuario al que aplicar la plantilla: " usuario2
