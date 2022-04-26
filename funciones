@@ -53,7 +53,7 @@ function f_instalaPaquete {
 	if [ $? != 0 ]; then
 		echo "El paquete quota no se encuentra instalado, procedemos a instalarlo"
 		apt update -y &>/dev/null
-		apt install -y quota
+		apt install -y $binario
 	fi
 }
 
