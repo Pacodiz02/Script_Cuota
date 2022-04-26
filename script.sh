@@ -11,7 +11,7 @@ f_conexion
 f_instalaPaquete
 f_existe_directorio
 f_UUID
-f_modifica_fstab
+f_existe_en_fstab
 f_habilita_quota
 f_configura_quota
 f_plantilla_quota
