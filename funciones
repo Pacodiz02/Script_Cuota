@@ -89,23 +89,17 @@ function f_UUID {
     fi
 }
 
-#Modificamos el fichero fstab
-function f_modifica_fstab {
-    if [ $? -eq 0 ]; then
-        echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /etc/fstab
-	mount -a
-    fi
-}
-
 #Comprobamos si el dispositivo existe ya en el fstab
-function f_existe_en_fstab {
+function f_modifica_fstab {
         cat /etc/fstab | egrep -o $uuid
         if [ $? -eq 0 ]; then
                 echo "El dispositvo ya está añadido en el fichero /etc/fstab"
                 return 0
         else
                 echo "El dispositivo de bloques no está en el fichero /etc/fstab, añadiendolo a /etc/fstab"
-                f_modifica_fstab
+                echo "UUID=$uuid /QUOTA               ext4    defaults,usrquota,grpquota 0       2" >> /etc/fstab
+		mount -a
+		return 0
         fi
 }
 
