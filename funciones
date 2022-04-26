@@ -140,6 +140,7 @@ function f_configura_quota {
                     echo "Cuota aplicada correctamente"
        else
                     echo "Error al intentar crear la cuota. Revisa los datos introducidos"
+		    exit
        fi
 }
 
@@ -152,6 +153,7 @@ function f_plantilla_quota {
                 echo "Plantilla aplicada correctamente"
         else
                 echo "Error al copiar la plantilla. Revisa que los nombres de usuarios introducidos sean correctos y existan en tu sistema"
+		exit
         fi
 }
 
