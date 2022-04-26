@@ -36,6 +36,7 @@ function f_root {
 #Mira si hay conexión con ftp.es.debian.org.
 function f_conexion {
     ping -c1 $repo &>/dev/null
+    ping -c1 $repo &>/dev/null
     if [ $? -eq 0 ]; then
         echo "Hay conexión"
         return 0
