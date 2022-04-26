@@ -28,7 +28,7 @@ function f_root {
             return 0
         else
             echo "Necesitas ser root para ejecutar el script. Cancelando script"
-	    return 1
+	    exit
         fi
         }
 
@@ -42,7 +42,7 @@ function f_conexion {
         return 0
     else
         echo "No hay conexion"
-        return 1
+        exit
     fi
 }
 
@@ -52,8 +52,8 @@ function f_instalaPaquete {
 	whatis quota &> /dev/null
 	if [ $? != 0 ]; then
 		echo "El paquete quota no se encuentra instalado, procedemos a instalarlo"
-		apt update -y &>/dev/null
-		apt install -y $binario
+		apt update -y &> /dev/null
+		apt install -y $binario &> /dev/null
 	fi
 }
 
@@ -69,10 +69,10 @@ function f_existe_directorio {
         else
             echo "No existe el directorio $directorio, procedemos a crearlo..."
             mkdir /QUOTA
-            chmod 777 /QUOTA/
-	    if [ $? -eq 0 ]; then
+            if [ $? -eq 0 ]; then
 		echo "Directorio $directorio creado satisfactoriamente"
 	    fi
+	    chmod 777 /QUOTA/
 	    return 0
         fi
 }
@@ -82,8 +82,7 @@ function f_UUID {
     echo $uuid &> /dev/null
     if [ $? -ne 0 ]; then
         echo "El dispositivo no existe."
-        return 1
-        set -e
+        exit
     else
         echo "El dispositivo existe."
         return 0
@@ -101,13 +100,12 @@ function f_modifica_fstab {
 #Comprobamos si el dispositivo existe ya en el fstab
 function f_existe_en_fstab {
         cat /etc/fstab | egrep -o $uuid
-
         if [ $? -eq 0 ]; then
                 echo "El dispositvo ya está añadido en el fichero /etc/fstab"
-                return 1
+                return 0
         else
                 echo "El dispositivo de bloques no está en el fichero /etc/fstab, añadiendolo a /etc/fstab"
-                return 0
+                f_modifica_fstab
         fi
 }
 
@@ -132,7 +130,7 @@ function f_habilita_quota {
 			return 0
 		 else
 			echo "Ha habido algún problema al crear los ficheros"
-			return 1
+			exit
 		 fi
         fi
 }
@@ -163,7 +161,7 @@ function f_plantilla_quota {
         fi
 }
 
-
+#Función para mostrar los dispositivos que hay disponibles para realizar la cuota
 # Fin Zona
 
 
