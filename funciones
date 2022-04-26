@@ -121,7 +121,7 @@ function f_habilita_quota {
 		return 0
         else
                  echo "Los ficheros aquota.users y aquota.groups no están creados, procedemos a crearlos"
-                 quotacheck -c /QUOTA &> /dev/null
+                 quotacheck -ug /QUOTA &> /dev/null
 		 if [ $? -eq 0 ]; then
 			echo "Archivos creados exitosamente"
 			quotaon $directorio
