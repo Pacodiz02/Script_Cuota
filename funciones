@@ -22,7 +22,6 @@ function f_limpia {
 }
 
 #Comprobar si somos root
-#Argumento: Ninguno
 function f_root {
         if [ $UID -eq 0 ]
         then
@@ -31,13 +30,11 @@ function f_root {
         else
             echo "Necesitas ser root para ejecutar el script. Cancelando script"
 	    return 1
-	    exit
         fi
         }
 
 
 #Mira si hay conexión con ftp.es.debian.org.
-#Devuelve 0 en caso de tenerla, 1 en caso negativo.
 function f_conexion {
     ping -c1 $repo &>/dev/null
     if [ $? -eq 0 ]; then
@@ -46,7 +43,6 @@ function f_conexion {
     else
         echo "No hay conexion"
         return 1
-        exit
     fi
 }
 
@@ -125,7 +121,7 @@ function f_habilita_quota {
 		return 0
         else
                  echo "Los ficheros aquota.users y aquota.groups no están creados, procedemos a crearlos"
-                 quotacheck -c /QUOTA
+                 quotacheck -c /QUOTA &> /dev/null
 		 if [ $? -eq 0 ]; then
 			echo "Archivos creados exitosamente"
 			quotaon $directorio
