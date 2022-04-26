@@ -8,7 +8,6 @@
 # Zona de declaración de variables
 directorio="/QUOTA"
 binario="quota quotatool"
-#dispositivo="sde"
 repo="ftp.es.debian.org"
 uuid=$(blkid -s UUID -o value /dev/$dispositivo)
 # Fin Zona
