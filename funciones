@@ -9,6 +9,7 @@
 directorio="/QUOTA"
 binario="quota quotatool"
 repo="ftp.es.debian.org"
+read -p "Introduce el dispositivo sobre el que aplicar la cuota: " dispositivo
 uuid=$(blkid -s UUID -o value /dev/$dispositivo)
 # Fin Zona
  
@@ -105,23 +106,23 @@ function f_modifica_fstab {
 
 #Habilitamos la cuota en el directorio QUOTA y comprobamos que los ficheros necesarios estén creados
 function f_habilita_quota {
-        if [ -e /QUOTA/aquota.users ] && [ -e /QUOTA/aquota.groups ]; then
+        if [ -e /QUOTA/aquota.user ] && [ -e /QUOTA/aquota.group ]; then
                 echo "Los ficheros necesarios ya se encuentran en el directorio QUOTAS"
-		quotaon $directorio
+		quotaon $directorio &> /dev/null
 		if [ $? -eq 0 ]; then
 			echo "Cuota habilitada"
+			return 0
 		fi
-		return 0
         else
-                 echo "Los ficheros aquota.users y aquota.groups no están creados, procedemos a crearlos"
+                 echo "Los ficheros aquota.user y aquota.group no están creados, procedemos a crearlos"
                  quotacheck -c /QUOTA &> /dev/null
 		 if [ $? -eq 0 ]; then
 			echo "Archivos creados exitosamente"
 			quotaon $directorio
 			if [ $? -eq 0 ]; then
 				echo "Cuota habilitada"
+				return 0
 			fi
-			return 0
 		 else
 			echo "Ha habido algún problema al crear los ficheros"
 			exit
