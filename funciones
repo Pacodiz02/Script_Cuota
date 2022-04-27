@@ -91,7 +91,7 @@ function f_UUID {
 
 #Comprobamos si el dispositivo existe ya en el fstab
 function f_modifica_fstab {
-        cat /etc/fstab | egrep -o $uuid
+        grep -o "$uuid" /etc/fstab
         if [ $? -eq 0 ]; then
                 echo "El dispositvo ya está añadido en el fichero /etc/fstab"
                 return 0
