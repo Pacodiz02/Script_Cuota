@@ -1,2 +1,2 @@
 # Script_Cuota
-Script realizado por Paco Diz, Ángel Suárez, Óscar Lucas, Alfonso Roldán y Alejandro Romero.
+Script realizado por Paco Diz, Ángel Suárez, Óscar Lucas y Alfonso Roldán.
